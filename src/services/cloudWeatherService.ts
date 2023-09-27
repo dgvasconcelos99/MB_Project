@@ -55,9 +55,7 @@ export interface IFetchCoordinatesOpenWeatherApiResponse {
     deg: number
     gust: number
   }
-  rain?: {
-    '1h': number
-  }
+  rain?: Object
   clouds?: {
     all: number
   }

@@ -5,10 +5,9 @@ import { IGetMusicBasedOnWeatherRequestDTO, IGetMusicBasedOnWeatherResponseDTO }
 export class GetMusicBasedOnWeatherUseCase {
   async execute(data: IGetMusicBasedOnWeatherRequestDTO): Promise<IGetMusicBasedOnWeatherResponseDTO> {
     const searchCoordinates = await fetchWeatherByLocation(data.location)
-    const { temp } = searchCoordinates?.main
+    let { temp } = searchCoordinates?.main
+    temp = Math.round(temp)
 
-    Math.round(temp)
-    console.log({ temp })
     if (!temp) throw new Error('Error on search temperature based on location')
 
     let selectedGenre: string
@@ -34,8 +33,10 @@ export class GetMusicBasedOnWeatherUseCase {
     if (!requestedMusic) throw new Error('Error on get spotify data')
 
     const formattedData = {
+      temperature: temp,
       musicName: requestedMusic.name,
       albumName: requestedMusic.album.name,
+      artists: requestedMusic.artists.map((artist) => artist.name),
       previewUrl: requestedMusic.preview_url,
       uri: requestedMusic.uri,
     }
