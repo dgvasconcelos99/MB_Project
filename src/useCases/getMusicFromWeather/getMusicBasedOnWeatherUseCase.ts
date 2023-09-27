@@ -1,14 +1,13 @@
 import { fetchWeatherByLocation } from '../../services/cloudWeatherService'
-import { getRandomSearch, getTopTracks } from '../../services/spotifyService'
+import { getRandomSearch } from '../../services/spotifyService'
 import { IGetMusicBasedOnWeatherRequestDTO, IGetMusicBasedOnWeatherResponseDTO } from './getMusicBasedOnWeatherDTO'
 
 export class GetMusicBasedOnWeatherUseCase {
   async execute(data: IGetMusicBasedOnWeatherRequestDTO): Promise<IGetMusicBasedOnWeatherResponseDTO> {
     const searchCoordinates = await fetchWeatherByLocation(data.location)
     let { temp } = searchCoordinates?.main
-    temp = Math.round(temp)
 
-    if (!temp) throw new Error('Error on search temperature based on location')
+    if (isNaN(temp)) throw new Error('Error on search temperature based on location')
 
     let selectedGenre: string
     switch (true) {
@@ -28,7 +27,7 @@ export class GetMusicBasedOnWeatherUseCase {
         break
     }
 
-    const requestedMusic = (await getRandomSearch(selectedGenre))?.tracks.items[0]
+    const requestedMusic = (await getRandomSearch(selectedGenre))?.tracks?.items[0]
 
     if (!requestedMusic) throw new Error('Error on get spotify data')
 

@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-import { ISpotifyGetMusicItems, ISpotifyResponseDTO } from '../useCases/getMusicFromWeather/getMusicBasedOnWeatherDTO'
+import { ISpotifyResponseDTO } from '../useCases/getMusicFromWeather/getMusicBasedOnWeatherDTO'
 
 async function fetchSpotifyWebApi(endpoint: string, method: string, body?: object): Promise<ISpotifyResponseDTO> {
   const token: string = process.env.SPOTIFY_TOKEN
@@ -14,14 +14,9 @@ async function fetchSpotifyWebApi(endpoint: string, method: string, body?: objec
   return await res.json()
 }
 
-async function getTopTracks(): Promise<any> {
-  return await fetchSpotifyWebApi('v1/me/top/tracks?time_range=short_term&limit=5', 'GET')
-}
-
 async function getRandomSearch(genre: string): Promise<ISpotifyResponseDTO> {
   const result = await fetchSpotifyWebApi(`v1/search?q=genres%3A${genre}&limit=1&type=track`, 'GET')
-  console.log({ result: result.tracks })
   return result
 }
 
-export { getTopTracks, getRandomSearch }
+export { getRandomSearch }
